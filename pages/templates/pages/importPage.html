@@ -48,7 +48,7 @@
             </form>
         </div> -->
 
-    <form class="h-100" style="" enctype="multipart/form-data" method="post" action="">
+    <form class="h-100" style="" enctype="multipart/form-data" method="post" action="/parse/">
         {% csrf_token %}
         <div class="container-import col-sm">
             <h1>Document Upload</h1>
@@ -73,15 +73,15 @@
                     <div id="main" class="text-center">
                     <!-- <p id="content">Step Number 1</p> -->
                     <div class="container-fluid">
-                        <p><input type="file" class="file-input"></p>    
-                        <p><input type="file" class="file-input hidden"></p>    
-                        <p><input type="file" class="file-input hidden"></p>    
+                         
+			<p><input type="file" class="col-sm" name="datafile"></p>
+    
                         <p class="file-input hidden" style="height: 21px;"></p> 
                     </div>
                     <div class="my-4" style="">
                         <button id="previousBtn" type="button" disabled>Previous</button>
                         <button id="nextBtn" type="button">Next</button>
-                        <button id="finishBtn" type="submit" disabled>Finish</button>    
+                        <button id="finishBtn" type="submit" >Finish</button>    
                     </div>
                 </div>
         </div>
