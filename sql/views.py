@@ -14,34 +14,24 @@ def rebuild_db(request):
     return_statement = 'Schema rebuilt!<br>';
     
     #Store table list
-    tables = [];
-    for t in conn.execute('SELECT name FROM sqlite_master WHERE type = \'table\';'):
-        for a in t:
-            tables.append(str(a));
+    remove_tables = ['student_barcode'];
+    
+    tables = ['visits', 'demographics', 'tags', 'logins'];
         
     #Remove tables
+    for t in remove_tables:
+        conn.execute('DROP TABLE IF EXISTS ' + t + ';');
     for t in tables:
         conn.execute('DROP TABLE IF EXISTS ' + t + ';');
         
     #Recreate tables
-    conn.execute('CREATE TABLE student_barcode(barcode_id TEXT, nhse_id INTEGER)');
-    conn.execute('CREATE TABLE visits(time_in TEXT, time_out TEXT, duration REAL, nshe_id TEXT,  event_name TEXT, appointment INTEGER)');
-    conn.execute('CREATE TABLE student_demographics(nshe_id INTEGER, rn_net_id TEXT, first_name TEXT, last_name TEXT, acad_career TEXT, units_taken INTEGER, age INTEGER, sex TEXT, ethnicity TEXT, current_gpa REAL, cumulative_gpa REAL, semester_gpa REAL, pell_grant INTEGER, benefit_chapter INTEGER, stem_scholarship INTEGER, residency TEXT, employment TEXT, hrs_per_week TEXT, dependents TEXT, marital_status TEXT, gender TEXT, parent_education TEXT, break_in_attendance INTEGER, needs_based_grants INTEGER, merit_based_grants INTEGER, fed_work_study INTEGER, military_grants INTEGER, millennium_scholarship INTEGER, nv_prepaid INTEGER)');
-    conn.execute('CREATE TABLE logins(email TEXT, password TEXT, first_name TEXT, last_name TEXT)');
-
-    
-    #Compare table lists
-    new_tables = [];
-    for t in conn.execute('SELECT name FROM sqlite_master WHERE type = \'table\';'):
-        for a in t:
-            new_tables.append(str(a));
-    
-    if(new_tables != tables):
-        return_statement = 'Schema not rebuilt correctly!<br>';
+    conn.execute('CREATE TABLE visits(student_name TEXT, student_email TEXT, student_id INTEGER, student_alt_id TEXT, classification TEXT, major TEXT, assigned_staff TEXT, care_unit TEXT, services TEXT, course_name TEXT, course_number TEXT, location TEXT, check_in_date TEXT, check_in_time TEXT, check_out_date TEXT, check_out_time TEXT, check_in_duration REAL, staff_name TEXT,staff_id TEXT, staff_email TEXT)');
+    conn.execute('CREATE TABLE demographics(student_name TEXT, student_email TEXT, student_id INTEGER, student_alt_id TEXT, classification TEXT, cumulative_gpa REAL, assigned_staff TEXT, cell_phone TEXT, home_phone TEXT, gender TEXT, ethnicity TEXT, date_of_birth TEXT, address TEXT, additional_address TEXT, city TEXT, state TEXT, zip TEXT, term_credit_hours REAL, term_gpa REAL, total_credit_hours_earned REAL, sms_opt_out INTEGER, datetime_opt_out TEXT, can_be_sent_messages INTEGER)');
+    conn.execute('CREATE TABLE tags(student_id INTEGER, tag TEXT, date TEXT)');
     
     return_statement = return_statement + '\n\n\n';
     
-    for t in new_tables:
+    for t in tables:
         return_statement = return_statement + t + ':<br>';
         return_statement = return_statement + 'cid, name, type, notnull, defaultval, pk<br>';
         for a in conn.execute('PRAGMA table_info(\'' + t + '\');'):
@@ -50,18 +40,3 @@ def rebuild_db(request):
         return_statement = return_statement + '<br>';
     
     return HttpResponse(return_statement);
-
-def add_superuser(request):
-    import hashlib;
-    conn = sqlite3.connect('vmc_tap.db');
-    
-    #Remove tables
-    conn.execute('DELETE FROM logins;');
-        
-    #Recreate tables
-    sql_args = ['admin@unr.edu', 'admin', 'Super', 'User']
-    sql_args[1] = hashlib.md5(sql_args[1].encode('utf-8')).hexdigest();
-    conn.execute('INSERT INTO logins VALUES (' + ', '.join(['\'' + str(a) + '\'' for a in sql_args]) + ');');
-    conn.commit();
-    
-    return HttpResponse(', '.join(sql_args));

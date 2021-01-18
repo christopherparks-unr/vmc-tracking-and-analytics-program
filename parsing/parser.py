@@ -20,6 +20,14 @@ class Data:
     staff_name = ''
     staff_id = ''
     staff_email = ''
+    
+    def get_insert_statement(self):
+        insert_val_list = [self.student_name, self.student_email, self.student_id, self.student_alt_id, self.classification, self.major, self.assigned_staff, self.care_unit, self.services, self.course_name, self.course_number, self.location, self.check_in_date, self.check_in_time, self.check_out_date, self.check_out_time, self.duration, self.staff_name, self.staff_id, self.staff_email]
+        input_val_string = ''
+        for i in insert_val_list:
+            input_val_string = input_val_string + '\'' + i + '\','
+        input_val_string = input_val_string[:-1]
+        return 'insert into visits values (' + input_val_string + ');'
 
     def __str__(self):
         return self.student_name + ' ' + self.student_id + ' ' + self.location + ' ' + 'Check in: ' + self.check_in_date + ' ' + self.check_in_time + ' ' + 'Check Out ' + self.check_out_date + self.check_out_time

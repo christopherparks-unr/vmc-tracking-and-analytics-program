@@ -11,7 +11,7 @@ import sqlite3
 def parse(request):
     if request.method == 'POST' and request.FILES['datafile']:
     
-        #conn = sqlite3.connect('vmc_tap.db');
+        conn = sqlite3.connect('vmc_tap.db');
     
         data_file = request.FILES['datafile'].read().decode('utf-8').splitlines()
         data,tags,staff = parser.parse_report(data_file)
@@ -20,8 +20,8 @@ def parse(request):
         for visit in data:
             return_string += str(visit) + '<br>'
             #Insert data into database
-            #conn.execute(visit.get_insert_statement())
-            #conn.commit();
+            conn.execute(visit.get_insert_statement())
+        conn.commit();
         return_string += 'Number of Visits: ' + str(len(data)) + '.<br>'
         
         #return_string += 'This data has been inserted into the database.<br>'
