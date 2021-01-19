@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'mailer',
     'login',
     'visualizations',
-    'formtools'
+    'formtools',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig'
 ]
 
 
@@ -88,6 +89,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'TAP.wsgi.application'
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
 # Database

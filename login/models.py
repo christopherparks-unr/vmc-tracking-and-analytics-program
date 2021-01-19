@@ -9,7 +9,7 @@ class CustomUserManager(BaseUserManager):
     # Create a new user with the specified fields
     def create_superuser(self, email, first_name, last_name, password=None, **extra_fields):
         # If email or password were not provided, throw an exception
-        if not email and password:
+        if not (email and password):
             raise ValueError('User must have an email address and password.')
         # Make the email not case-sensitive
         email = self.normalize_email(email)
